@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "genero")
+@Table(name = "usuario")
 public class User {
     @Id
     @Column(name = "id_usuario", nullable = false, unique = true)
