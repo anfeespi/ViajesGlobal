@@ -3,6 +3,8 @@ package co.edu.unbosque.viajes_global.model;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "usuario")
@@ -40,15 +42,18 @@ public class User {
     @JoinColumn(name = "id_genero", referencedColumnName = "id_genero")
     private Gender userGender;
 
-    @ManyToOne
-    @JoinColumn(name = "id_medio_notificacion", referencedColumnName = "id_medio_notificacion")
-    private NotificationMethod userNotificationMethod;
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_notificacion",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_medio_notificacion"))
+    private Set<NotificationMethod> userNotificationMethods;
 
     public User() {
 
     }
 
-    public User(String idUser, String userNames, String userLastNames, String userEmail, String userPassword, String userAddress, String userPhone, Date userBirthday, DocumentType userDocumentType, Gender userGender, NotificationMethod userNotificationMethod) {
+    public User(String idUser, String userNames, String userLastNames, String userEmail, String userPassword, String userAddress, String userPhone, Date userBirthday, DocumentType userDocumentType, Gender userGender) {
         this.idUser = idUser;
         this.userNames = userNames;
         this.userLastNames = userLastNames;
@@ -59,7 +64,7 @@ public class User {
         this.userBirthday = userBirthday;
         this.userDocumentType = userDocumentType;
         this.userGender = userGender;
-        this.userNotificationMethod = userNotificationMethod;
+        this.userNotificationMethods = new HashSet<NotificationMethod>();
     }
 
     public String getIdUser() {
@@ -142,11 +147,11 @@ public class User {
         this.userGender = userGender;
     }
 
-    public NotificationMethod getUserNotificationMethod() {
-        return userNotificationMethod;
+    public Set<NotificationMethod> getUserNotificationMethods() {
+        return userNotificationMethods;
     }
 
-    public void setUserNotificationMethod(NotificationMethod userNotificationMethod) {
-        this.userNotificationMethod = userNotificationMethod;
+    public void setUserNotificationMethods(Set<NotificationMethod> userNotificationMethods) {
+        this.userNotificationMethods = userNotificationMethods;
     }
 }

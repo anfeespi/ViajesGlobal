@@ -1,34 +1,25 @@
 package co.edu.unbosque.viajes_global.model;
 
-import jakarta.persistence.Column;
-
 public class NotificationMethodDTO {
-    private Integer idNotificationMethod;
+    private final boolean smsNotification;
+    private final boolean emailNotification;
+    private final boolean pushNotification;
 
-    private String notificationMethod;
-
-    public NotificationMethodDTO() {
-
+    public NotificationMethodDTO(boolean smsNotification, boolean emailNotification, boolean pushNotification) {
+        this.smsNotification = smsNotification;
+        this.emailNotification = emailNotification;
+        this.pushNotification = pushNotification;
     }
 
-    public NotificationMethodDTO(Integer idNotificationMethod, String notificationMethod) {
-        this.idNotificationMethod = idNotificationMethod;
-        this.notificationMethod = notificationMethod;
+    public boolean isSmsNotification() {
+        return smsNotification;
     }
 
-    public Integer getIdNotificationMethod() {
-        return idNotificationMethod;
+    public boolean isEmailNotification() {
+        return emailNotification;
     }
 
-    public void setIdNotificationMethod(Integer idNotificationMethod) {
-        this.idNotificationMethod = idNotificationMethod;
-    }
-
-    public String getNotificationMethod() {
-        return notificationMethod;
-    }
-
-    public void setNotificationMethod(String notificationMethod) {
-        this.notificationMethod = notificationMethod;
+    public boolean isPushNotification() {
+        return pushNotification;
     }
 }

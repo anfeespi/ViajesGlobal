@@ -21,19 +21,19 @@ public class UserDTO {
 
     private String userPhone;
 
-    private Date userBirthday;
+    private String userBirthday;
 
     private Integer userDocumentType;
 
     private Integer userGender;
 
-    private Integer userNotificationMethod;
+    private Integer[] notificationMethod;
 
     public UserDTO() {
 
     }
 
-    public UserDTO(String idUser, String userNames, String userLastNames, String userEmail, String userPassword, String userAddress, String userPhone, Date userBirthday, Integer userDocumentType, Integer userGender, Integer userNotificationMethod) {
+    public UserDTO(String idUser, String userNames, String userLastNames, String userEmail, String userPassword, String userAddress, String userPhone, String userBirthday, Integer userDocumentType, Integer userGender) {
         this.idUser = idUser;
         this.userNames = userNames;
         this.userLastNames = userLastNames;
@@ -44,7 +44,6 @@ public class UserDTO {
         this.userBirthday = userBirthday;
         this.userDocumentType = userDocumentType;
         this.userGender = userGender;
-        this.userNotificationMethod = userNotificationMethod;
     }
 
     public String getIdUser() {
@@ -103,11 +102,11 @@ public class UserDTO {
         this.userPhone = userPhone;
     }
 
-    public Date getUserBirthday() {
+    public String getUserBirthday() {
         return userBirthday;
     }
 
-    public void setUserBirthday(Date userBirthday) {
+    public void setUserBirthday(String userBirthday) {
         this.userBirthday = userBirthday;
     }
 
@@ -127,11 +126,11 @@ public class UserDTO {
         this.userGender = userGender;
     }
 
-    public Integer getUserNotificationMethod() {
-        return userNotificationMethod;
+    public Integer[] getNotificationMethod() {
+        return notificationMethod;
     }
 
-    public void setUserNotificationMethod(Integer userNotificationMethod) {
-        this.userNotificationMethod = userNotificationMethod;
+    public void setNotificationMethod(Integer[] notificationMethod) {
+        this.notificationMethod = notificationMethod;
     }
 }

@@ -2,6 +2,8 @@ package co.edu.unbosque.viajes_global.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "medio_notificacion")
 public class NotificationMethod {
@@ -12,6 +14,9 @@ public class NotificationMethod {
 
     @Column(name = "medio_notificacion")
     private String notificationMethod;
+
+    @ManyToMany(mappedBy = "userNotificationMethods")
+    private Set<User> users;
 
     public NotificationMethod() {
 
@@ -36,5 +41,13 @@ public class NotificationMethod {
 
     public void setNotificationMethod(String notificationMethod) {
         this.notificationMethod = notificationMethod;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }
