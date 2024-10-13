@@ -1,37 +1,45 @@
 package co.edu.unbosque.viajes_global.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
-import java.util.Date;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.Length;
 
 public class UserDTO {
+    @Length(min = 1, max = 10, message = "The document isn't valid")
     private String idUser;
 
+    @Length(max = 40, message = "The name is too long")
     private String userNames;
 
+    @Length(max = 40, message = "The lastnames are too long")
     private String userLastNames;
 
+    @Length(max = 100, message = "")
+    @Email(message = "The email isn't valid")
     private String userEmail;
 
+    @Length(min = 8, max = 40, message = "Something went wrong with your password")
     private String userPassword;
 
+    @Length(max = 40, message = "The address is too long")
     private String userAddress;
 
+    @Length(max = 11, message = "The phone number is too long")
     private String userPhone;
 
+    @Length(max = 8, message = "The date is malformed, use the format dd/MM/YYYY")
     private String userBirthday;
 
+    @NotNull(message = "Select your document type")
     private Integer userDocumentType;
 
+    @NotNull(message = "Select the gender")
     private Integer userGender;
 
+    @NotNull(message = "Select ur notifications methods")
+    @Size(min = 3, max = 3, message = "The standard of notifications aren't established")
     private Integer[] notificationMethod;
-
-    public UserDTO() {
-
-    }
 
     public UserDTO(String idUser, String userNames, String userLastNames, String userEmail, String userPassword, String userAddress, String userPhone, String userBirthday, Integer userDocumentType, Integer userGender) {
         this.idUser = idUser;
