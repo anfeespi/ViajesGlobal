@@ -25,10 +25,10 @@ public class UserDTO {
     @Length(max = 40, message = "The address is too long")
     private String userAddress;
 
-    @Length(max = 11, message = "The phone number is too long")
+    @Length(max = 15, message = "The phone number is too long")
     private String userPhone;
 
-    @Length(max = 8, message = "The date is malformed, use the format dd/MM/YYYY")
+    @Length(max = 10, message = "The date is malformed, use the format dd/MM/YYYY")
     private String userBirthday;
 
     @NotNull(message = "Select your document type")

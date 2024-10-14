@@ -2,6 +2,8 @@ package co.edu.unbosque.viajes_global.service;
 
 import co.edu.unbosque.viajes_global.model.*;
 import co.edu.unbosque.viajes_global.repository.UserRepository;
+import co.edu.unbosque.viajes_global.util.MailSender;
+import co.edu.unbosque.viajes_global.util.SMSSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +28,12 @@ public class UserService {
 
         if(notificationMethod[0] == 1){
             builder.setSmsNotification(true);
+            SMSSender.sendWelcomeSMS(entity.getUserPhone(), entity.getUserNames(), entity.getUserGender().getIdGender() % 2 == 1);
         }
 
         if(notificationMethod[1] == 1){
             builder.setEmailNotification(true);
+            MailSender.sendWelcomeEmail(entity.getUserEmail(), entity.getUserNames(), entity.getUserGender().getIdGender() % 2 == 1);
         }
 
         if(notificationMethod[2] == 1){
