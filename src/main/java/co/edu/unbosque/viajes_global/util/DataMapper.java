@@ -1,4 +1,4 @@
-package co.edu.unbosque.viajes_global.service;
+package co.edu.unbosque.viajes_global.util;
 
 import co.edu.unbosque.viajes_global.exception.DateException;
 import co.edu.unbosque.viajes_global.exception.DocumentTypeNotFound;
@@ -7,7 +7,6 @@ import co.edu.unbosque.viajes_global.model.*;
 import co.edu.unbosque.viajes_global.repository.DocumentTypeRepository;
 import co.edu.unbosque.viajes_global.repository.GenderRepository;
 import co.edu.unbosque.viajes_global.repository.NotificationMethodRepository;
-import co.edu.unbosque.viajes_global.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

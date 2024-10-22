@@ -2,6 +2,7 @@ package co.edu.unbosque.viajes_global.service;
 
 import co.edu.unbosque.viajes_global.model.*;
 import co.edu.unbosque.viajes_global.repository.UserRepository;
+import co.edu.unbosque.viajes_global.util.DataMapper;
 import co.edu.unbosque.viajes_global.util.MailSender;
 import co.edu.unbosque.viajes_global.util.SMSSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private DataMapper dataMapper;
+    private final DataMapper dataMapper;
 
     public UserService(){
-
+        dataMapper = new DataMapper();
     }
 
     public boolean registerUser(UserDTO dto, Integer[] notificationMethod) {
