@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +37,7 @@ public class DataMapper {
         String userAddress = dto.getUserAddress();
         String userPhone = dto.getUserPhone();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        Date userBirthday = null;
+        Date userBirthday;
 
         try {
             userBirthday = format.parse(dto.getUserBirthday());
@@ -62,13 +63,13 @@ public class DataMapper {
         HashSet<NotificationMethod> notificationMethods = new HashSet<>();
 
         if(dto.isSmsNotification())
-            notificationMethods.add(notificationMethodRepository.findById(1).get());
+            notificationMethods.add(notificationMethodRepository.findById(1).isPresent() ? notificationMethodRepository.findById(1).get() : null);
 
         if(dto.isEmailNotification())
-            notificationMethods.add(notificationMethodRepository.findById(2).get());
+            notificationMethods.add(notificationMethodRepository.findById(2).isPresent() ? notificationMethodRepository.findById(2).get() : null);
 
         if(dto.isPushNotification())
-            notificationMethods.add(notificationMethodRepository.findById(3).get());
+            notificationMethods.add(notificationMethodRepository.findById(3).isPresent() ? notificationMethodRepository.findById(3).get() : null);
 
         return notificationMethods;
     }
