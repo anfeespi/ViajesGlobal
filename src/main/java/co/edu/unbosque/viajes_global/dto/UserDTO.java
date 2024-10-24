@@ -1,4 +1,4 @@
-package co.edu.unbosque.viajes_global.model;
+package co.edu.unbosque.viajes_global.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

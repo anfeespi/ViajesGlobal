@@ -1,11 +1,9 @@
-package co.edu.unbosque.viajes_global.model;
-
-import jakarta.persistence.Column;
+package co.edu.unbosque.viajes_global.dto;
 
 public class TouristPlaceDTO {
     private Integer idTouristPlace;
 
-    private String tourist_place;
+    private String touristPlace;
 
     private String description;
 
@@ -13,9 +11,9 @@ public class TouristPlaceDTO {
 
     }
 
-    public TouristPlaceDTO(Integer idTouristPlace, String tourist_place, String description) {
+    public TouristPlaceDTO(Integer idTouristPlace, String touristPlace, String description) {
         this.idTouristPlace = idTouristPlace;
-        this.tourist_place = tourist_place;
+        this.touristPlace = touristPlace;
         this.description = description;
     }
 
@@ -27,12 +25,12 @@ public class TouristPlaceDTO {
         this.idTouristPlace = idTouristPlace;
     }
 
-    public String getTourist_place() {
-        return tourist_place;
+    public String gettouristPlace() {
+        return touristPlace;
     }
 
-    public void setTourist_place(String tourist_place) {
-        this.tourist_place = tourist_place;
+    public void settouristPlace(String touristPlace) {
+        this.touristPlace = touristPlace;
     }
 
     public String getDescription() {

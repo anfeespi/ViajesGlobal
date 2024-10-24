@@ -1,8 +1,4 @@
-package co.edu.unbosque.viajes_global.model;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+package co.edu.unbosque.viajes_global.dto;
 
 import java.util.Date;
 

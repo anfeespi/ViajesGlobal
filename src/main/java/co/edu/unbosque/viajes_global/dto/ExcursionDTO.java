@@ -1,8 +1,4 @@
-package co.edu.unbosque.viajes_global.model;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+package co.edu.unbosque.viajes_global.dto;
 
 public class ExcursionDTO {
     private Integer idExcursion;

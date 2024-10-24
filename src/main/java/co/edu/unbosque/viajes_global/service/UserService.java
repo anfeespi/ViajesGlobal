@@ -1,5 +1,7 @@
 package co.edu.unbosque.viajes_global.service;
 
+import co.edu.unbosque.viajes_global.dto.NotificationMethodDTO;
+import co.edu.unbosque.viajes_global.dto.UserDTO;
 import co.edu.unbosque.viajes_global.model.*;
 import co.edu.unbosque.viajes_global.repository.UserRepository;
 import co.edu.unbosque.viajes_global.util.DataMapper;
@@ -26,17 +28,17 @@ public class UserService {
 
         NotificationMethodBuilder builder = new NotificationMethodBuilder();
 
-        if(notificationMethod[0] == 1){
+        if(notificationMethod[NotificationMethods.SMS.ordinal()] == 1){
             builder.setSmsNotification(true);
             SMSSender.sendWelcomeSMS(entity.getUserPhone(), entity.getUserNames(), entity.getUserGender().getIdGender() % 2 == 1);
         }
 
-        if(notificationMethod[1] == 1){
+        if(notificationMethod[NotificationMethods.EMAIL.ordinal()] == 1){
             builder.setEmailNotification(true);
             MailSender.sendWelcomeEmail(entity.getUserEmail(), entity.getUserNames(), entity.getUserGender().getIdGender() % 2 == 1);
         }
 
-        if(notificationMethod[2] == 1){
+        if(notificationMethod[NotificationMethods.PUSH.ordinal()] == 1){
             builder.setPushNotification(true);
         }
 

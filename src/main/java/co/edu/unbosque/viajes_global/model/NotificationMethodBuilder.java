@@ -1,5 +1,7 @@
 package co.edu.unbosque.viajes_global.model;
 
+import co.edu.unbosque.viajes_global.dto.NotificationMethodDTO;
+
 public class NotificationMethodBuilder {
     private boolean smsNotification;
     private boolean emailNotification;

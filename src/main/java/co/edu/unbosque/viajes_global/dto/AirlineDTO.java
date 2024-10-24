@@ -1,6 +1,4 @@
-package co.edu.unbosque.viajes_global.model;
-
-import jakarta.persistence.Column;
+package co.edu.unbosque.viajes_global.dto;
 
 public class AirlineDTO {
     private Integer idAirline;

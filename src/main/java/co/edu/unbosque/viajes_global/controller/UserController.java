@@ -1,6 +1,6 @@
 package co.edu.unbosque.viajes_global.controller;
 
-import co.edu.unbosque.viajes_global.model.UserDTO;
+import co.edu.unbosque.viajes_global.dto.UserDTO;
 import co.edu.unbosque.viajes_global.service.UserService;
 import co.edu.unbosque.viajes_global.util.Encryption;
 import jakarta.validation.Valid;
