@@ -1,7 +1,5 @@
 package co.edu.unbosque.viajes_global.dto;
 
-import java.util.Date;
-
 public class FlightDTO {
     private Integer idFlight;
 
@@ -11,15 +9,11 @@ public class FlightDTO {
 
     private Integer touristPlaceDestination;
 
-    private Date dateBegin;
+    private String dateBegin;
 
-    private Date dateEnd;
-
-    private Integer baggageType;
+    private String dateEnd;
 
     private Integer passengersNumber;
-
-    private Integer seat;
 
     private Integer airline;
 
@@ -31,26 +25,19 @@ public class FlightDTO {
 
     private Double total;
 
-    private Integer scales;
-
-    public FlightDTO() {
-    }
-
-    public FlightDTO(Integer flightType, Integer touristPlaceOrigin, Integer touristPlaceDestination, Date dateBegin, Date dateEnd, Integer baggageType, Integer passengersNumber, Integer seat, Integer airline, Double baseFee, Double taxes, Double charges, Double total, Integer scales) {
+    public FlightDTO(Integer idFlight, Integer flightType, Integer touristPlaceOrigin, Integer touristPlaceDestination, String dateBegin, String dateEnd, Integer passengersNumber, Integer airline, Double baseFee, Double taxes, Double charges, Double total) {
+        this.idFlight = idFlight;
         this.flightType = flightType;
         this.touristPlaceOrigin = touristPlaceOrigin;
         this.touristPlaceDestination = touristPlaceDestination;
         this.dateBegin = dateBegin;
         this.dateEnd = dateEnd;
-        this.baggageType = baggageType;
         this.passengersNumber = passengersNumber;
-        this.seat = seat;
         this.airline = airline;
         this.baseFee = baseFee;
         this.taxes = taxes;
         this.charges = charges;
         this.total = total;
-        this.scales = scales;
     }
 
     public Integer getIdFlight() {
@@ -85,44 +72,20 @@ public class FlightDTO {
         this.touristPlaceDestination = touristPlaceDestination;
     }
 
-    public Date getDateBegin() {
+    public String getDateBegin() {
         return dateBegin;
     }
 
-    public void setDateBegin(Date dateBegin) {
+    public void setDateBegin(String dateBegin) {
         this.dateBegin = dateBegin;
     }
 
-    public Date getDateEnd() {
+    public String getDateEnd() {
         return dateEnd;
     }
 
-    public void setDateEnd(Date dateEnd) {
+    public void setDateEnd(String dateEnd) {
         this.dateEnd = dateEnd;
-    }
-
-    public Integer getBaggageType() {
-        return baggageType;
-    }
-
-    public void setBaggageType(Integer baggageType) {
-        this.baggageType = baggageType;
-    }
-
-    public Integer getPassengersNumber() {
-        return passengersNumber;
-    }
-
-    public void setPassengersNumber(Integer passengersNumber) {
-        this.passengersNumber = passengersNumber;
-    }
-
-    public Integer getSeat() {
-        return seat;
-    }
-
-    public void setSeat(Integer seat) {
-        this.seat = seat;
     }
 
     public Integer getAirline() {
@@ -131,6 +94,14 @@ public class FlightDTO {
 
     public void setAirline(Integer airline) {
         this.airline = airline;
+    }
+
+    public Integer getPassengersNumber() {
+        return passengersNumber;
+    }
+
+    public void setPassengersNumber(Integer passengersNumber) {
+        this.passengersNumber = passengersNumber;
     }
 
     public Double getBaseFee() {
@@ -163,13 +134,5 @@ public class FlightDTO {
 
     public void setTotal(Double total) {
         this.total = total;
-    }
-
-    public Integer getScales() {
-        return scales;
-    }
-
-    public void setScales(Integer scales) {
-        this.scales = scales;
     }
 }

@@ -7,7 +7,6 @@ import java.util.Date;
 @Entity
 @Table(name = "vuelo")
 public class Flight {
-
     @Id
     @Column(name = "id_vuelo")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,28 +16,24 @@ public class Flight {
     @JoinColumn(name = "id_tipo_vuelo", referencedColumnName = "id_tipo_vuelo")
     private FlightType flightType;
 
-    @Column(name = "id_lugar_turistico_origen", nullable = false)
-    private Integer touristPlaceOrigin;
+    @ManyToOne
+    @JoinColumn(name = "id_lugar_turistico_origen", referencedColumnName = "id_lugar_turistico", nullable = false)
+    private TouristPlace touristPlaceOrigin;
 
-    @Column(name = "id_lugar_turistico_destino", nullable = false)
-    private Integer touristPlaceDestination;
+    @ManyToOne
+    @JoinColumn(name = "id_lugar_turistico_destino", referencedColumnName = "id_lugar_turistico", nullable = false)
+    private TouristPlace touristPlaceDestination;
 
     @Column(name = "fecha_inicio", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateBegin;
 
     @Column(name = "fecha_fin", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateEnd;
-
-    @ManyToOne
-    @JoinColumn(name = "id_tipo_equipaje", referencedColumnName = "id_tipo_equipaje")
-    private BaggageType baggageType;
 
     @Column(name = "numero_pasajeros", nullable = false)
     private Integer passengersNumber;
-
-    @ManyToOne
-    @JoinColumn(name = "id_asiento", referencedColumnName = "id_asiento")
-    private Seat seat;
 
     @ManyToOne
     @JoinColumn(name = "id_aerolinea", referencedColumnName = "id_aerolinea")
@@ -56,27 +51,21 @@ public class Flight {
     @Column(name = "total_tarifa", nullable = false)
     private Double total;
 
-    @Column(name = "escala", nullable = false)
-    private Integer scales;
-
     public Flight() {
     }
 
-    public Flight(FlightType flightType, Integer touristPlaceOrigin, Integer touristPlaceDestination, Date dateBegin, Date dateEnd, BaggageType baggageType, Integer passengersNumber, Seat seat, Airline airline, Double baseFee, Double taxes, Double charges, Double total, Integer scales) {
+    public Flight(FlightType flightType, TouristPlace touristPlaceOrigin, TouristPlace touristPlaceDestination, Date dateBegin, Date dateEnd, Integer passengersNumber, Airline airline, Double baseFee, Double taxes, Double charges, Double total) {
         this.flightType = flightType;
         this.touristPlaceOrigin = touristPlaceOrigin;
         this.touristPlaceDestination = touristPlaceDestination;
         this.dateBegin = dateBegin;
         this.dateEnd = dateEnd;
-        this.baggageType = baggageType;
         this.passengersNumber = passengersNumber;
-        this.seat = seat;
         this.airline = airline;
         this.baseFee = baseFee;
         this.taxes = taxes;
         this.charges = charges;
         this.total = total;
-        this.scales = scales;
     }
 
     public Integer getIdFlight() {
@@ -95,28 +84,20 @@ public class Flight {
         this.flightType = flightType;
     }
 
-    public Integer getTouristPlaceOrigin() {
+    public TouristPlace getTouristPlaceOrigin() {
         return touristPlaceOrigin;
     }
 
-    public void setTouristPlaceOrigin(Integer touristPlaceOrigin) {
+    public void setTouristPlaceOrigin(TouristPlace touristPlaceOrigin) {
         this.touristPlaceOrigin = touristPlaceOrigin;
     }
 
-    public Integer getTouristPlaceDestination() {
+    public TouristPlace getTouristPlaceDestination() {
         return touristPlaceDestination;
     }
 
-    public void setTouristPlaceDestination(Integer touristPlaceDestination) {
+    public void setTouristPlaceDestination(TouristPlace touristPlaceDestination) {
         this.touristPlaceDestination = touristPlaceDestination;
-    }
-
-    public Date getDateBegin() {
-        return dateBegin;
-    }
-
-    public void setDateBegin(Date dateBegin) {
-        this.dateBegin = dateBegin;
     }
 
     public Date getDateEnd() {
@@ -127,14 +108,6 @@ public class Flight {
         this.dateEnd = dateEnd;
     }
 
-    public BaggageType getBaggageType() {
-        return baggageType;
-    }
-
-    public void setBaggageType(BaggageType baggageType) {
-        this.baggageType = baggageType;
-    }
-
     public Integer getPassengersNumber() {
         return passengersNumber;
     }
@@ -143,12 +116,12 @@ public class Flight {
         this.passengersNumber = passengersNumber;
     }
 
-    public Seat getSeat() {
-        return seat;
+    public Date getDateBegin() {
+        return dateBegin;
     }
 
-    public void setSeat(Seat seat) {
-        this.seat = seat;
+    public void setDateBegin(Date dateBegin) {
+        this.dateBegin = dateBegin;
     }
 
     public Airline getAirline() {
@@ -189,13 +162,5 @@ public class Flight {
 
     public void setTotal(Double total) {
         this.total = total;
-    }
-
-    public Integer getScales() {
-        return scales;
-    }
-
-    public void setScales(Integer scales) {
-        this.scales = scales;
     }
 }

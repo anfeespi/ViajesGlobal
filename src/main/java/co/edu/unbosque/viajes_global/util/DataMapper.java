@@ -1,5 +1,6 @@
 package co.edu.unbosque.viajes_global.util;
 
+import co.edu.unbosque.viajes_global.dto.FlightDTO;
 import co.edu.unbosque.viajes_global.dto.NotificationMethodDTO;
 import co.edu.unbosque.viajes_global.dto.TouristPlaceDTO;
 import co.edu.unbosque.viajes_global.dto.UserDTO;
@@ -7,9 +8,7 @@ import co.edu.unbosque.viajes_global.exception.DateException;
 import co.edu.unbosque.viajes_global.exception.DocumentTypeNotFound;
 import co.edu.unbosque.viajes_global.exception.GenderNotFound;
 import co.edu.unbosque.viajes_global.model.*;
-import co.edu.unbosque.viajes_global.repository.DocumentTypeRepository;
-import co.edu.unbosque.viajes_global.repository.GenderRepository;
-import co.edu.unbosque.viajes_global.repository.NotificationMethodRepository;
+import co.edu.unbosque.viajes_global.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,15 @@ public class DataMapper {
 
     @Autowired
     private NotificationMethodRepository notificationMethodRepository;
+
+    @Autowired
+    private FlightTypeRepository flightTypeRepository;
+
+    @Autowired
+    private TouristPlaceRepository touristPlaceRepository;
+
+    @Autowired
+    private AirlineRepository airlineRepository;
 
     public User userDTOToUser(UserDTO dto){
         String idUser = dto.getIdUser();
@@ -77,13 +85,42 @@ public class DataMapper {
         return notificationMethods;
     }
 
-    public TouristPlace touristPlaceDTOToTouristPlace(TouristPlaceDTO dto){
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.convertValue(dto, TouristPlace.class);
-    }
-
     public TouristPlaceDTO touristPlaceToTouristPlaceDTO(TouristPlace dto){
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.convertValue(dto, TouristPlaceDTO.class);
+    }
+
+    public Flight flightDTOToFlight(FlightDTO dto) throws ParseException {
+        FlightType flightType = flightTypeRepository.findById(dto.getFlightType()).get();
+        TouristPlace touristPlaceOrigin = touristPlaceRepository.findById(dto.getTouristPlaceOrigin()).get();
+        TouristPlace touristPlaceDestination = touristPlaceRepository.findById(dto.getTouristPlaceDestination()).get();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dateBegin = format.parse(dto.getDateBegin());
+        Date dateEnd = format.parse(dto.getDateEnd());
+        Integer passengerNumber = dto.getPassengersNumber();
+        Airline airline = airlineRepository.findById(dto.getAirline()).get();
+        Double baseFee = dto.getBaseFee();
+        Double taxes = dto.getTaxes();
+        Double charges = dto.getCharges();
+        Double total = dto.getTotal();
+
+        return new Flight(flightType, touristPlaceOrigin, touristPlaceDestination, dateBegin, dateEnd, passengerNumber, airline, baseFee, taxes, charges, total);
+    }
+
+    public FlightDTO flightToFlightDTO(Flight entity){
+        Integer idFlight = entity.getIdFlight();
+        Integer flightType = entity.getFlightType().getIdFlightType();
+        Integer touristPlaceOrigin = entity.getTouristPlaceOrigin().getIdTouristPlace();
+        Integer touristPlaceDestination = entity.getTouristPlaceDestination().getIdTouristPlace();
+        String dateBegin = entity.getDateBegin().toString();
+        String dateEnd = entity.getDateEnd().toString();
+        Integer passengersNumber = entity.getPassengersNumber();
+        Integer airline = entity.getAirline().getIdAirline();
+        Double baseFee = entity.getBaseFee();
+        Double taxes = entity.getTaxes();
+        Double charges = entity.getCharges();
+        Double total = entity.getTotal();
+
+        return new FlightDTO(idFlight, flightType, touristPlaceOrigin, touristPlaceDestination, dateBegin, dateEnd, passengersNumber, airline, baseFee, taxes, charges, total);
     }
 }
