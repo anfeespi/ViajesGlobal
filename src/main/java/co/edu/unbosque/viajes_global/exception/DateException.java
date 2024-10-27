@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class DateException extends RuntimeException{
     public DateException() {
-        super("We have problems to parse the Date of birth");
+        super("We have problems to parse the Date");
     }
 }

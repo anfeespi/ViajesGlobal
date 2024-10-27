@@ -1,9 +1,6 @@
 package co.edu.unbosque.viajes_global.util;
 
-import co.edu.unbosque.viajes_global.dto.FlightDTO;
-import co.edu.unbosque.viajes_global.dto.NotificationMethodDTO;
-import co.edu.unbosque.viajes_global.dto.TouristPlaceDTO;
-import co.edu.unbosque.viajes_global.dto.UserDTO;
+import co.edu.unbosque.viajes_global.dto.*;
 import co.edu.unbosque.viajes_global.exception.DateException;
 import co.edu.unbosque.viajes_global.exception.DocumentTypeNotFound;
 import co.edu.unbosque.viajes_global.exception.GenderNotFound;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +37,7 @@ public class DataMapper {
     @Autowired
     private AirlineRepository airlineRepository;
 
-    public User userDTOToUser(UserDTO dto){
+    public User userDTOToUser(UserDTO dto) {
         String idUser = dto.getIdUser();
         String userNames = dto.getUserNames();
         String userLastNames = dto.getUserLastNames();
@@ -57,35 +55,59 @@ public class DataMapper {
         }
 
         DocumentType userDocumentType = documentTypeRepository.findById(dto.getUserDocumentType()).isPresent() ? documentTypeRepository.findById(dto.getUserDocumentType()).get() : null;
-        if(userDocumentType == null){
+        if (userDocumentType == null) {
             throw new DocumentTypeNotFound();
         }
 
         Gender userGender = genderRepository.findById(dto.getUserGender()).isPresent() ? genderRepository.findById(dto.getUserGender()).get() : null;
 
-        if(userGender == null){
+        if (userGender == null) {
             throw new GenderNotFound();
         }
 
         return new User(idUser, userNames, userLastNames, userEmail, userPassword, userAddress, userPhone, userBirthday, userDocumentType, userGender);
     }
 
-    public Set<NotificationMethod> notificationMethodDTOToNotificationMethod(NotificationMethodDTO dto){
+    public UserDTO userToUserDTO(User user) {
+        String idUser = user.getIdUser();
+        String userNames = user.getUserNames();
+        String userLastNames = user.getUserLastNames();
+        String userEmail = user.getUserEmail();
+        String userPassword = user.getUserPassword();
+        String userAddress = user.getUserAddress();
+        String userPhone = user.getUserPhone();
+        String userBirthday = user.getUserBirthday().toString();
+        Integer userDocumentType = user.getUserDocumentType().getIdDocumentType();
+        Integer userGender = user.getUserGender().getIdGender();
+        Integer[] notificationMethods = notificationMethodToNotificationMethodDTO(user.getUserNotificationMethods());
+        UserDTO mapped = new UserDTO(idUser, userNames, userLastNames, userEmail, userPassword, userAddress, userPhone, userBirthday, userDocumentType, userGender);
+        mapped.setNotificationMethod(notificationMethods);
+        return mapped;
+    }
+
+    public Set<NotificationMethod> notificationMethodDTOToNotificationMethod(NotificationMethodDTO dto) {
         HashSet<NotificationMethod> notificationMethods = new HashSet<>();
 
-        if(dto.isSmsNotification())
+        if (dto.isSmsNotification())
             notificationMethods.add(notificationMethodRepository.findById(NotificationMethods.SMS.ordinal() + 1).isPresent() ? notificationMethodRepository.findById(NotificationMethods.SMS.ordinal() + 1).get() : null);
 
-        if(dto.isEmailNotification())
+        if (dto.isEmailNotification())
             notificationMethods.add(notificationMethodRepository.findById(NotificationMethods.EMAIL.ordinal() + 1).isPresent() ? notificationMethodRepository.findById(NotificationMethods.EMAIL.ordinal() + 1).get() : null);
 
-        if(dto.isPushNotification())
+        if (dto.isPushNotification())
             notificationMethods.add(notificationMethodRepository.findById(NotificationMethods.PUSH.ordinal() + 1).isPresent() ? notificationMethodRepository.findById(NotificationMethods.PUSH.ordinal() + 1).get() : null);
 
         return notificationMethods;
     }
 
-    public TouristPlaceDTO touristPlaceToTouristPlaceDTO(TouristPlace dto){
+    public Integer[] notificationMethodToNotificationMethodDTO(Set<NotificationMethod> notificationMethods) {
+        Integer[] notificationMethodDTO = new Integer[3];
+        Arrays.fill(notificationMethodDTO, 0);
+        notificationMethods.forEach(e -> notificationMethodDTO[e.getIdNotificationMethod() - 1] = 1);
+        return notificationMethodDTO;
+    }
+
+    public TouristPlaceDTO touristPlaceToTouristPlaceDTO(TouristPlace dto) {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.convertValue(dto, TouristPlaceDTO.class);
     }
@@ -107,7 +129,7 @@ public class DataMapper {
         return new Flight(flightType, touristPlaceOrigin, touristPlaceDestination, dateBegin, dateEnd, passengerNumber, airline, baseFee, taxes, charges, total);
     }
 
-    public FlightDTO flightToFlightDTO(Flight entity){
+    public FlightDTO flightToFlightDTO(Flight entity) {
         Integer idFlight = entity.getIdFlight();
         Integer flightType = entity.getFlightType().getIdFlightType();
         Integer touristPlaceOrigin = entity.getTouristPlaceOrigin().getIdTouristPlace();
