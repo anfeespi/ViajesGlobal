@@ -1,12 +1,14 @@
 package co.edu.unbosque.viajes_global.service;
 
 import co.edu.unbosque.viajes_global.dto.FlightDTO;
+import co.edu.unbosque.viajes_global.exception.DateException;
 import co.edu.unbosque.viajes_global.model.Flight;
 import co.edu.unbosque.viajes_global.repository.FlightRepository;
 import co.edu.unbosque.viajes_global.util.DataMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,5 +31,15 @@ public class FlightService {
         }
 
         return dtos;
+    }
+
+    public void createFlight(FlightDTO flightDTO){
+        try {
+            Flight flight = dataMapper.flightDTOToFlight(flightDTO);
+            flightRepository.save(flight);
+        } catch (ParseException e) {
+            throw new DateException();
+        }
+
     }
 }

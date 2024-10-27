@@ -26,4 +26,14 @@ public class UserController {
         boolean state = userService.registerUser(user, user.getNotificationMethod());
         return state ? ResponseEntity.status(HttpStatus.CREATED).body("Successfully Registered " + user.getUserNames()) : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong...");
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestParam String user, @RequestBody String password) {
+        password = Encryption.hashPassword(password.replace("\"", ""));
+        String response = userService.login(user, password);
+        HttpStatus status = !response.isEmpty() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED;
+        response = !response.isBlank() ? response : "The user isn't registered or the password is incorrect [both are bad options ):]";
+
+        return ResponseEntity.status(status).body(response);
+    }
 }
