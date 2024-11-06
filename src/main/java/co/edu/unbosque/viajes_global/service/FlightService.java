@@ -6,6 +6,9 @@ import co.edu.unbosque.viajes_global.model.Flight;
 import co.edu.unbosque.viajes_global.repository.FlightRepository;
 import co.edu.unbosque.viajes_global.util.DataMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -31,6 +34,15 @@ public class FlightService {
         }
 
         return dtos;
+    }
+
+    public Page<FlightDTO> getAllFlightsPageable(Pageable pageable) {
+        List<Flight> flights = (List<Flight>) flightRepository.findAll();
+        List<FlightDTO> dtos = new ArrayList<>();
+        for(Flight flight : flights) {
+            dtos.add(dataMapper.flightToFlightDTO(flight));
+        }
+        return new PageImpl<>(dtos, pageable, flights.size());
     }
 
     public void createFlight(FlightDTO flightDTO){

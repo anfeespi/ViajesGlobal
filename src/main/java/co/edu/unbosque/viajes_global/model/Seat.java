@@ -20,17 +20,12 @@ public class Seat {
     @Column(name = "columna_asiento", nullable = false)
     private Integer seatColumn;
 
-    @ManyToOne
-    @JoinColumn(name = "id_tipo_asiento", referencedColumnName = "id_tipo_asiento")
-    private SeatType seatType;
-
     public Seat() {
     }
 
-    public Seat(Integer seatRow, Integer seatColumn, SeatType seatType) {
+    public Seat(Integer seatRow, Integer seatColumn) {
         this.seatRow = seatRow;
         this.seatColumn = seatColumn;
-        this.seatType = seatType;
     }
 
     public Integer getIdSeat() {
@@ -63,13 +58,5 @@ public class Seat {
 
     public void setSeatColumn(Integer seatColumn) {
         this.seatColumn = seatColumn;
-    }
-
-    public SeatType getSeatType() {
-        return seatType;
-    }
-
-    public void setSeatType(SeatType seatType) {
-        this.seatType = seatType;
     }
 }
