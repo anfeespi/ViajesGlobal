@@ -38,28 +38,28 @@ public class DataMapper {
     private AirlineRepository airlineRepository;
 
     public User userDTOToUser(UserDTO dto) {
-        String idUser = dto.getIdUser();
-        String userNames = dto.getUserNames();
-        String userLastNames = dto.getUserLastNames();
-        String userEmail = dto.getUserEmail();
-        String userPassword = dto.getUserPassword();
-        String userAddress = dto.getUserAddress();
-        String userPhone = dto.getUserPhone();
+        String idUser = dto.idUser();
+        String userNames = dto.userNames();
+        String userLastNames = dto.userLastNames();
+        String userEmail = dto.userEmail();
+        String userPassword = dto.userPassword();
+        String userAddress = dto.userAddress();
+        String userPhone = dto.userPhone();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         Date userBirthday;
 
         try {
-            userBirthday = format.parse(dto.getUserBirthday());
+            userBirthday = format.parse(dto.userBirthday());
         } catch (ParseException e) {
             throw new DateException();
         }
 
-        DocumentType userDocumentType = documentTypeRepository.findById(dto.getUserDocumentType()).isPresent() ? documentTypeRepository.findById(dto.getUserDocumentType()).get() : null;
+        DocumentType userDocumentType = documentTypeRepository.findById(dto.userDocumentType()).isPresent() ? documentTypeRepository.findById(dto.userDocumentType()).get() : null;
         if (userDocumentType == null) {
             throw new DocumentTypeNotFound();
         }
 
-        Gender userGender = genderRepository.findById(dto.getUserGender()).isPresent() ? genderRepository.findById(dto.getUserGender()).get() : null;
+        Gender userGender = genderRepository.findById(dto.userGender()).isPresent() ? genderRepository.findById(dto.userGender()).get() : null;
 
         if (userGender == null) {
             throw new GenderNotFound();
@@ -80,9 +80,7 @@ public class DataMapper {
         Integer userDocumentType = user.getUserDocumentType().getIdDocumentType();
         Integer userGender = user.getUserGender().getIdGender();
         Integer[] notificationMethods = notificationMethodToNotificationMethodDTO(user.getUserNotificationMethods());
-        UserDTO mapped = new UserDTO(idUser, userNames, userLastNames, userEmail, userPassword, userAddress, userPhone, userBirthday, userDocumentType, userGender);
-        mapped.setNotificationMethod(notificationMethods);
-        return mapped;
+        return new UserDTO(idUser, userNames, userLastNames, userEmail, userPassword, userAddress, userPhone, userBirthday, userDocumentType, userGender, notificationMethods);
     }
 
     public Set<NotificationMethod> notificationMethodDTOToNotificationMethod(NotificationMethodDTO dto) {

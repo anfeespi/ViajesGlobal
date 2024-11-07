@@ -4,10 +4,13 @@ import co.edu.unbosque.viajes_global.dto.NotificationMethodBuilder;
 import co.edu.unbosque.viajes_global.dto.NotificationMethodDTO;
 import co.edu.unbosque.viajes_global.dto.NotificationMethods;
 import co.edu.unbosque.viajes_global.dto.UserDTO;
+import co.edu.unbosque.viajes_global.exception.PasswordMismatchException;
+import co.edu.unbosque.viajes_global.exception.UserNotFoundException;
 import co.edu.unbosque.viajes_global.model.NotificationMethod;
 import co.edu.unbosque.viajes_global.model.User;
 import co.edu.unbosque.viajes_global.repository.UserRepository;
 import co.edu.unbosque.viajes_global.util.DataMapper;
+import co.edu.unbosque.viajes_global.util.Encryption;
 import co.edu.unbosque.viajes_global.util.MailSender;
 import co.edu.unbosque.viajes_global.util.SMSSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +33,7 @@ public class UserService {
 
     public boolean registerUser(UserDTO dto, Integer[] notificationMethod) {
         User entity = dataMapper.userDTOToUser(dto);
-
+        entity.setUserPassword(Encryption.hashPassword(entity.getUserPassword()));
         NotificationMethodBuilder builder = new NotificationMethodBuilder();
 
         if (notificationMethod[NotificationMethods.SMS.ordinal()] == 1) {
@@ -57,13 +60,27 @@ public class UserService {
         return true;
     }
 
-    public String login(String email, String password) {
+    public UserDTO login(String email, String password) throws PasswordMismatchException, UserNotFoundException {
         List<UserDTO> users = ((List<User>) userRepository.findAll()).stream().map(dataMapper::userToUserDTO).toList();
         for (UserDTO user : users) {
-            if (user.getUserPassword().equals(password) && user.getUserEmail().equals(email)) {
-                return user.getIdUser();
+            if (user.userEmail().equals(email)) {
+                if(user.userPassword().equals(password)){
+                    return user;
+                }else{
+                    throw new PasswordMismatchException();
+                }
             }
         }
-        return "";
+        throw new UserNotFoundException();
+    }
+
+    public UserDTO getById(String id) throws UserNotFoundException {
+        User user = userRepository.findById(id).isPresent() ? userRepository.findById(id).get() : null;
+
+        if(user != null){
+            return dataMapper.userToUserDTO(user);
+        }
+
+        throw new UserNotFoundException();
     }
 }

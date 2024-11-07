@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class MailSender {
     /**
-     * Correo electronico
+     * Correo electrónico
      */
     private static String emailFrom ="viajes.global.co@gmail.com";
     /**
@@ -27,7 +27,7 @@ public class MailSender {
      */
     private static Properties prop;
     /**
-     * Sesion
+     * Sesión
      */
     private static Session session;
     /**
@@ -36,7 +36,7 @@ public class MailSender {
     private static MimeMessage email;
 
     /**
-     * Metodo para enviar el correo
+     * Método para enviar el correo
      * @param addressDestination Destino
      * @param username Nombre del usuario
      */

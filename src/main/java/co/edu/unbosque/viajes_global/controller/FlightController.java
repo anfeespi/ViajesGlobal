@@ -23,14 +23,14 @@ public class FlightController {
 
     }
 
-    @GetMapping("/get")
+    @GetMapping
     public ResponseEntity<Page<FlightDTO>> getAllFlights(@PageableDefault(size = 8) Pageable pageable) {
         Page<FlightDTO> flights = flightService.getAllFlightsPageable(pageable);
 
         return flights.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(flights);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<String> addFlight(@RequestBody FlightDTO flight) {
         flightService.createFlight(flight);
         return ResponseEntity.status(HttpStatus.CREATED).body("The flight is on the web!");
