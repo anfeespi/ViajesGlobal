@@ -156,34 +156,37 @@ public class DataMapper {
 
     public PackageDetail packageDetailDTOToPackageDetail(PackageDetailDTO dto) throws UserNotFoundException {
         User user;
-        if(userRepository.findById(dto.user()).isPresent())
+        if (userRepository.findById(dto.user()).isPresent())
             user = userRepository.findById(dto.user()).get();
         else
             throw new UserNotFoundException();
 
-
+        Double totalPrice = 0.0;
         Set<HotelDetail> hotelDetails = new HashSet<>();
-        for(Integer hotel : dto.hotelDetail()){
-            if(hotelDetailRepository.findById(hotel).isPresent())
+        for (Integer hotel : dto.hotelDetail()) {
+            if (hotelDetailRepository.findById(hotel).isPresent()) {
                 hotelDetails.add(hotelDetailRepository.findById(hotel).get());
-            else
+                totalPrice += hotelDetailRepository.findById(hotel).get().getTotalValue();
+            } else
                 throw new ElementNotPresentException();
         }
 
         Set<FlightDetail> flightDetails = new HashSet<>();
-        for(Integer flight : dto.flightDetail()){
-            if(flightDetailRepository.findById(flight).isPresent())
+        for (Integer flight : dto.flightDetail()) {
+            if (flightDetailRepository.findById(flight).isPresent()) {
                 flightDetails.add(flightDetailRepository.findById(flight).get());
-            else
+                totalPrice += flightDetailRepository.findById(flight).get().getFlight().getTotal();
+            } else
                 throw new ElementNotPresentException();
         }
 
 
         Set<ExcursionDetail> excursionDetails = new HashSet<>();
-        for(Integer excursion : dto.excursionDetail()){
-            if(excursionDetailRepository.findById(excursion).isPresent())
+        for (Integer excursion : dto.excursionDetail()) {
+            if (excursionDetailRepository.findById(excursion).isPresent()) {
                 excursionDetails.add(excursionDetailRepository.findById(excursion).get());
-            else
+                totalPrice += excursionDetailRepository.findById(excursion).get().getTotalValue();
+            } else
                 throw new ElementNotPresentException();
         }
 
@@ -191,7 +194,11 @@ public class DataMapper {
         packageDetail.setHotelDetail(hotelDetails);
         packageDetail.setFlightDetail(flightDetails);
         packageDetail.setExcursionDetail(excursionDetails);
-
+        packageDetail.setTotalPrice(totalPrice);
         return packageDetail;
+    }
+
+    public PackageDetailDTO packageDetailToPackageDetailDTO(PackageDetail packageDetail) {
+        return new PackageDetailDTO(packageDetail.getPackageDetailId(), packageDetail.getUser().getIdUser(), packageDetail.getHotelDetail().stream().map(HotelDetail::getHotelDetailId).toList().toArray(new Integer[0]), packageDetail.getFlightDetail().stream().map(FlightDetail::getFlightDetailId).toList().toArray(new Integer[0]), packageDetail.getExcursionDetail().stream().map(ExcursionDetail::getExcursionDetailId).toList().toArray(new Integer[0]), packageDetail.getTotalPrice());
     }
 }

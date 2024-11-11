@@ -41,7 +41,38 @@ public class PackageDetailBuilder {
     }
 
     public PackageDetailDTO build() {
-        return new PackageDetailDTO(packageDetailId, user, (Integer[]) hotelDetail.toArray(), (Integer[]) flightDetail.toArray(), (Integer[]) excursionDetail.toArray());
+        return new PackageDetailDTO(packageDetailId, user, hotelDetail.toArray(new Integer[0]), flightDetail.toArray(new Integer[0]), excursionDetail.toArray(new Integer[0]), 0.0);
     }
 
+    public Integer getPackageDetailId() {
+        return packageDetailId;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public ArrayList<Integer> getHotelDetail() {
+        return hotelDetail;
+    }
+
+    public void setHotelDetail(ArrayList<Integer> hotelDetail) {
+        this.hotelDetail = hotelDetail;
+    }
+
+    public ArrayList<Integer> getFlightDetail() {
+        return flightDetail;
+    }
+
+    public void setFlightDetail(ArrayList<Integer> flightDetail) {
+        this.flightDetail = flightDetail;
+    }
+
+    public ArrayList<Integer> getExcursionDetail() {
+        return excursionDetail;
+    }
+
+    public void setExcursionDetail(ArrayList<Integer> excursionDetail) {
+        this.excursionDetail = excursionDetail;
+    }
 }

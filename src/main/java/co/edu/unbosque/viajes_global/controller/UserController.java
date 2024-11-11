@@ -16,7 +16,6 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin("*")
 public class UserController {
     @Autowired
     private UserService userService;

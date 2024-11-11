@@ -24,7 +24,7 @@ public class TouristPlaceController {
 
     }
 
-    @GetMapping("/show")
+    @GetMapping()
     public ResponseEntity<?> getTouristPlaces() {
         List<TouristPlaceDTO> ret = touristPlaceService.getAllTouristPlaces();
 
