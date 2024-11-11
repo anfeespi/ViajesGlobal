@@ -1,9 +1,7 @@
 package co.edu.unbosque.viajes_global.util;
 
 import co.edu.unbosque.viajes_global.dto.*;
-import co.edu.unbosque.viajes_global.exception.DateException;
-import co.edu.unbosque.viajes_global.exception.DocumentTypeNotFound;
-import co.edu.unbosque.viajes_global.exception.GenderNotFound;
+import co.edu.unbosque.viajes_global.exception.*;
 import co.edu.unbosque.viajes_global.model.*;
 import co.edu.unbosque.viajes_global.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +34,18 @@ public class DataMapper {
 
     @Autowired
     private AirlineRepository airlineRepository;
+
+    @Autowired
+    private HotelDetailRepository hotelDetailRepository;
+
+    @Autowired
+    private FlightDetailRepository flightDetailRepository;
+
+    @Autowired
+    private ExcursionDetailRepository excursionDetailRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public User userDTOToUser(UserDTO dto) {
         String idUser = dto.idUser();
@@ -86,13 +96,13 @@ public class DataMapper {
     public Set<NotificationMethod> notificationMethodDTOToNotificationMethod(NotificationMethodDTO dto) {
         HashSet<NotificationMethod> notificationMethods = new HashSet<>();
 
-        if (dto.isSmsNotification())
+        if (dto.smsNotification())
             notificationMethods.add(notificationMethodRepository.findById(NotificationMethods.SMS.ordinal() + 1).isPresent() ? notificationMethodRepository.findById(NotificationMethods.SMS.ordinal() + 1).get() : null);
 
-        if (dto.isEmailNotification())
+        if (dto.emailNotification())
             notificationMethods.add(notificationMethodRepository.findById(NotificationMethods.EMAIL.ordinal() + 1).isPresent() ? notificationMethodRepository.findById(NotificationMethods.EMAIL.ordinal() + 1).get() : null);
 
-        if (dto.isPushNotification())
+        if (dto.pushNotification())
             notificationMethods.add(notificationMethodRepository.findById(NotificationMethods.PUSH.ordinal() + 1).isPresent() ? notificationMethodRepository.findById(NotificationMethods.PUSH.ordinal() + 1).get() : null);
 
         return notificationMethods;
@@ -111,18 +121,18 @@ public class DataMapper {
     }
 
     public Flight flightDTOToFlight(FlightDTO dto) throws ParseException {
-        FlightType flightType = flightTypeRepository.findById(dto.getFlightType()).get();
-        TouristPlace touristPlaceOrigin = touristPlaceRepository.findById(dto.getTouristPlaceOrigin()).get();
-        TouristPlace touristPlaceDestination = touristPlaceRepository.findById(dto.getTouristPlaceDestination()).get();
+        FlightType flightType = flightTypeRepository.findById(dto.flightType()).get();
+        TouristPlace touristPlaceOrigin = touristPlaceRepository.findById(dto.touristPlaceOrigin()).get();
+        TouristPlace touristPlaceDestination = touristPlaceRepository.findById(dto.touristPlaceDestination()).get();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date dateBegin = format.parse(dto.getDateBegin());
-        Date dateEnd = format.parse(dto.getDateEnd());
-        Integer passengerNumber = dto.getPassengersNumber();
-        Airline airline = airlineRepository.findById(dto.getAirline()).get();
-        Double baseFee = dto.getBaseFee();
-        Double taxes = dto.getTaxes();
-        Double charges = dto.getCharges();
-        Double total = dto.getTotal();
+        Date dateBegin = format.parse(dto.dateBegin());
+        Date dateEnd = format.parse(dto.dateEnd());
+        Integer passengerNumber = dto.passengersNumber();
+        Airline airline = airlineRepository.findById(dto.airline()).get();
+        Double baseFee = dto.baseFee();
+        Double taxes = dto.taxes();
+        Double charges = dto.charges();
+        Double total = dto.total();
 
         return new Flight(flightType, touristPlaceOrigin, touristPlaceDestination, dateBegin, dateEnd, passengerNumber, airline, baseFee, taxes, charges, total);
     }
@@ -142,5 +152,46 @@ public class DataMapper {
         Double total = entity.getTotal();
 
         return new FlightDTO(idFlight, flightType, touristPlaceOrigin, touristPlaceDestination, dateBegin, dateEnd, passengersNumber, airline, baseFee, taxes, charges, total);
+    }
+
+    public PackageDetail packageDetailDTOToPackageDetail(PackageDetailDTO dto) throws UserNotFoundException {
+        User user;
+        if(userRepository.findById(dto.user()).isPresent())
+            user = userRepository.findById(dto.user()).get();
+        else
+            throw new UserNotFoundException();
+
+
+        Set<HotelDetail> hotelDetails = new HashSet<>();
+        for(Integer hotel : dto.hotelDetail()){
+            if(hotelDetailRepository.findById(hotel).isPresent())
+                hotelDetails.add(hotelDetailRepository.findById(hotel).get());
+            else
+                throw new ElementNotPresentException();
+        }
+
+        Set<FlightDetail> flightDetails = new HashSet<>();
+        for(Integer flight : dto.flightDetail()){
+            if(flightDetailRepository.findById(flight).isPresent())
+                flightDetails.add(flightDetailRepository.findById(flight).get());
+            else
+                throw new ElementNotPresentException();
+        }
+
+
+        Set<ExcursionDetail> excursionDetails = new HashSet<>();
+        for(Integer excursion : dto.excursionDetail()){
+            if(excursionDetailRepository.findById(excursion).isPresent())
+                excursionDetails.add(excursionDetailRepository.findById(excursion).get());
+            else
+                throw new ElementNotPresentException();
+        }
+
+        PackageDetail packageDetail = new PackageDetail(user);
+        packageDetail.setHotelDetail(hotelDetails);
+        packageDetail.setFlightDetail(flightDetails);
+        packageDetail.setExcursionDetail(excursionDetails);
+
+        return packageDetail;
     }
 }
