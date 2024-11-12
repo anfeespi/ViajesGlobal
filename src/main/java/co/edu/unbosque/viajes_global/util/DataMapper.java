@@ -201,4 +201,44 @@ public class DataMapper {
     public PackageDetailDTO packageDetailToPackageDetailDTO(PackageDetail packageDetail) {
         return new PackageDetailDTO(packageDetail.getPackageDetailId(), packageDetail.getUser().getIdUser(), packageDetail.getHotelDetail().stream().map(HotelDetail::getHotelDetailId).toList().toArray(new Integer[0]), packageDetail.getFlightDetail().stream().map(FlightDetail::getFlightDetailId).toList().toArray(new Integer[0]), packageDetail.getExcursionDetail().stream().map(ExcursionDetail::getExcursionDetailId).toList().toArray(new Integer[0]), packageDetail.getTotalPrice());
     }
+
+    public HotelDTO hotelToHotelDTO(Hotel entity) {
+        return new HotelDTO(entity.getIdHotel(), entity.getTouristPlace().getIdTouristPlace(), entity.getHotelName(), entity.getGuestsNumber(), entity.getTotalValue(), entity.getDetails());
+    }
+
+    public Hotel hotelDTOToHotel(HotelDTO dto) {
+        if (touristPlaceRepository.existsById(dto.touristPlace())) {
+            TouristPlace touristPlace = touristPlaceRepository.findById(dto.touristPlace()).get();
+            return new Hotel(touristPlace, dto.hotelName(), dto.guestsNumber(), dto.totalValue(), dto.details());
+        }
+        throw new ElementNotPresentException();
+    }
+
+    public HotelDetailDTO hotelDetailToHotelDetailDTO(HotelDetail hotelDetail) {
+        return new HotelDetailDTO(hotelDetail.getHotelDetailId(), hotelToHotelDTO(hotelDetail.getHotel()), hotelDetail.getBeginDate(), hotelDetail.getEndDate(), hotelDetail.getGuestNumber(), hotelDetail.getTotalValue());
+    }
+
+    public HotelDetail hotelDetailDTOToHotelDetail(HotelDetailDTO dto) {
+        return new HotelDetail(hotelDTOToHotel(dto.hotel()), dto.beginDate(), dto.endDate(), dto.guestNumber(), dto.totalValue());
+    }
+
+    public ExcursionDTO excursionToExcursionDTO(Excursion entity) {
+        return new ExcursionDTO(entity.getIdExcursion(), entity.getTouristPlace().getIdTouristPlace(), entity.getNameExcursion(), entity.getDescriptionExcursion(), entity.getPassengerPrice());
+    }
+
+    public Excursion excursionDTOToExcursion(ExcursionDTO dto) {
+        if (touristPlaceRepository.existsById(dto.touristPlace())) {
+            TouristPlace touristPlace = touristPlaceRepository.findById(dto.touristPlace()).get();
+            return new Excursion(touristPlace, dto.nameExcursion(), dto.descriptionExcursion(), dto.passengerPrice());
+        }
+        throw new ElementNotPresentException();
+    }
+
+    public ExcursionDetailDTO excursionDetailToExcursionDetailDTO(ExcursionDetail entity) {
+        return new ExcursionDetailDTO(entity.getExcursionDetailId(), excursionToExcursionDTO(entity.getExcursion()), entity.getGuestNumber(), entity.getTotalValue());
+    }
+
+    public ExcursionDetail excursionDetailDTOToExcursionDetail(ExcursionDetailDTO dto) {
+        return new ExcursionDetail(excursionDTOToExcursion(dto.excursion()), dto.guestNumber(), dto.totalValue());
+    }
 }

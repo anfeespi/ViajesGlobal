@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/flights")
-@CrossOrigin("*")
 public class FlightController {
     @Autowired
     private FlightService flightService;
