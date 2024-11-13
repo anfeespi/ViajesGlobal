@@ -27,6 +27,12 @@ public class DataMapper {
     private NotificationMethodRepository notificationMethodRepository;
 
     @Autowired
+    private BaggageTypeRepository baggageTypeRepository;
+
+    @Autowired
+    private SeatRepository seatRepository;
+
+    @Autowired
     private FlightTypeRepository flightTypeRepository;
 
     @Autowired
@@ -34,6 +40,9 @@ public class DataMapper {
 
     @Autowired
     private AirlineRepository airlineRepository;
+
+    @Autowired
+    private PassengerTypeRepository passengerTypeRepository;
 
     @Autowired
     private HotelDetailRepository hotelDetailRepository;
@@ -220,6 +229,18 @@ public class DataMapper {
 
     public HotelDetail hotelDetailDTOToHotelDetail(HotelDetailDTO dto) {
         return new HotelDetail(hotelDTOToHotel(dto.hotel()), dto.beginDate(), dto.endDate(), dto.guestNumber(), dto.totalValue());
+    }
+
+    public FlightDetailDTO flightDetailToFlightDetailDTO(FlightDetail flightDetail) {
+        return new FlightDetailDTO(flightDetail.getFlightDetailId(), flightToFlightDTO(flightDetail.getFlight()), flightDetail.getPassengerType().getIdPassengerType(), flightDetail.getBaggageType().getIdBaggageType(), flightDetail.getSeat().getIdSeat());
+    }
+
+    public FlightDetail flightDetailDTOToFlightDetail(FlightDetailDTO dto) throws ParseException {
+        Flight flight = flightDTOToFlight(dto.flight());
+        PassengerType passengerType = passengerTypeRepository.findById(dto.passengerType()).get();
+        BaggageType baggageType = baggageTypeRepository.findById(dto.baggageType()).get();
+        Seat seat = seatRepository.findById(dto.seat()).get();
+        return new FlightDetail(flight, passengerType, baggageType, seat);
     }
 
     public ExcursionDTO excursionToExcursionDTO(Excursion entity) {

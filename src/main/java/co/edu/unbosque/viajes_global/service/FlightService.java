@@ -1,8 +1,10 @@
 package co.edu.unbosque.viajes_global.service;
 
-import co.edu.unbosque.viajes_global.dto.FlightDTO;
-import co.edu.unbosque.viajes_global.exception.DateException;
+import co.edu.unbosque.viajes_global.dto.FlightDetailDTO;
+import co.edu.unbosque.viajes_global.exception.ElementNotPresentException;
 import co.edu.unbosque.viajes_global.model.Flight;
+import co.edu.unbosque.viajes_global.model.FlightDetail;
+import co.edu.unbosque.viajes_global.repository.FlightDetailRepository;
 import co.edu.unbosque.viajes_global.repository.FlightRepository;
 import co.edu.unbosque.viajes_global.util.DataMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,46 +14,43 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FlightService {
     @Autowired
-    private FlightRepository flightRepository;
+    private FlightDetailRepository flightDetailRepository;
 
-    private final DataMapper dataMapper;
+    @Autowired
+    private FlightRepository flightsRepository;
+
+    @Autowired
+    private DataMapper dataMapper;
 
     public FlightService() {
-        dataMapper = new DataMapper();
+
     }
 
-    public List<FlightDTO> getAllFlights() {
-        List<Flight> flights = (List<Flight>) flightRepository.findAll();
-        List<FlightDTO> dtos = new ArrayList<>();
-        for(Flight flight : flights) {
-            dtos.add(dataMapper.flightToFlightDTO(flight));
-        }
-
-        return dtos;
+    public List<FlightDetailDTO> getAllFlightsDetails() {
+        return flightDetailRepository.findAll().stream().map(dataMapper::flightDetailToFlightDetailDTO).toList();
     }
 
-    public Page<FlightDTO> getAllFlightsPageable(Pageable pageable) {
-        List<Flight> flights = (List<Flight>) flightRepository.findAll();
-        List<FlightDTO> dtos = new ArrayList<>();
-        for(Flight flight : flights) {
-            dtos.add(dataMapper.flightToFlightDTO(flight));
-        }
-        return new PageImpl<>(dtos, pageable, flights.size());
+    public Page<FlightDetailDTO> getAllFlightsPageable(Pageable pageable) {
+        List<FlightDetailDTO> flightDetailDTOS = getAllFlightsDetails();
+        return new PageImpl<>(flightDetailDTOS, pageable, flightDetailDTOS.size());
     }
 
-    public void createFlight(FlightDTO flightDTO){
-        try {
-            Flight flight = dataMapper.flightDTOToFlight(flightDTO);
-            flightRepository.save(flight);
-        } catch (ParseException e) {
-            throw new DateException();
+    public FlightDetailDTO getFlightDetailById(Integer id) {
+        if (flightsRepository.existsById(id)) {
+            return dataMapper.flightDetailToFlightDetailDTO(flightDetailRepository.findById(id).get());
         }
+        throw new ElementNotPresentException();
+    }
 
+    public FlightDetailDTO registerFlight(FlightDetailDTO flightDetailDTO) throws ParseException {
+        FlightDetail entity = dataMapper.flightDetailDTOToFlightDetail(flightDetailDTO);
+        Flight toSave = entity.getFlight();
+        flightsRepository.save(toSave);
+        return dataMapper.flightDetailToFlightDetailDTO(flightDetailRepository.save(entity));
     }
 }
