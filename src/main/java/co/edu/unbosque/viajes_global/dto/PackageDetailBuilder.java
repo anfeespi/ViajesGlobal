@@ -41,7 +41,10 @@ public class PackageDetailBuilder {
     }
 
     public PackageDetailDTO build() {
-        return new PackageDetailDTO(packageDetailId, user, hotelDetail.toArray(new Integer[0]), flightDetail.toArray(new Integer[0]), excursionDetail.toArray(new Integer[0]), 0.0);
+        return new PackageDetailDTO(packageDetailId, user,
+                hotelDetail.toArray(new Integer[0]),
+                flightDetail.toArray(new Integer[0]),
+                excursionDetail.toArray(new Integer[0]), 0.0);
     }
 
     public Integer getPackageDetailId() {

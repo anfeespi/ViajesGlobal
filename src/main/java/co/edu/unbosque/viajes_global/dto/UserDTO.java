@@ -15,5 +15,6 @@ public record UserDTO(@Length(min = 1, max = 10, message = "The document isn't v
                       @Length(max = 10, message = "The date is malformed, use the format dd/MM/YYYY") String userBirthday,
                       @NotNull(message = "Select your document type") Integer userDocumentType,
                       @NotNull(message = "Select the gender") Integer userGender,
-                      @NotNull(message = "Select ur notifications methods") @Size(min = 3, max = 3, message = "The standard of notifications aren't established") Integer[] notificationMethod) {
+                      @NotNull(message = "Select ur notifications methods")
+                      @Size(min = 3, max = 3, message = "The standard of notifications aren't established") Integer[] notificationMethod) {
 }
