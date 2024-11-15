@@ -8,7 +8,7 @@ public class SMSSender {
 
     public static final String ACCOUNT_SID = "AC74e80a3054cfc43c9292b8034f8882c7";
 
-    public static final String AUTH_TOKEN = "c58fe51bb29a9936242e89a25c5c970b";
+    public static final String AUTH_TOKEN = "5c8884bd53c6e9ed77f20e2668bc4423";
 
     public static boolean sendWelcomeSMS(String phoneNumber, String username, boolean gender) {
         String msg = "¡Hey, " + username + " bienvenid" + (gender ? 'o' : 'a') + " a Viajes Global! ¡Prepárate para descubrir el mundo!" +
