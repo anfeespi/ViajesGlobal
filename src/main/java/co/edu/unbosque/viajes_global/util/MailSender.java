@@ -1,7 +1,10 @@
 package co.edu.unbosque.viajes_global.util;
 
 import jakarta.mail.*;
-import jakarta.mail.internet.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 import java.util.Properties;
 
@@ -9,11 +12,11 @@ public class MailSender {
     /**
      * Correo electrónico
      */
-    private static String emailFrom ="viajes.global.co@gmail.com";
+    private static String emailFrom = "viajes.global.co@gmail.com";
     /**
      * Contraseña de seguridad
      */
-    private static String passwordFrom="upfk vsay cqxa tzgl";
+    private static String passwordFrom = "upfk vsay cqxa tzgl";
     /**
      * Asunto
      */
@@ -37,12 +40,13 @@ public class MailSender {
 
     /**
      * Método para enviar el correo
+     *
      * @param addressDestination Destino
-     * @param username Nombre del usuario
+     * @param username           Nombre del usuario
      */
     public static boolean sendWelcomeEmail(String addressDestination, String username, boolean gender) {
-        prop= new Properties();
-        subject= "VIAJES GLOBAL TE DA LA BIENVENIDA!";
+        prop = new Properties();
+        subject = "VIAJES GLOBAL TE DA LA BIENVENIDA!";
         content = "<!DOCTYPE html>\n" +
                 "<html xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" lang=\"en\">\n" +
                 "\n" +
@@ -186,7 +190,7 @@ public class MailSender {
                 "\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n" +
                 "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\">\n" +
                 "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style=\"color:#101112;direction:ltr;font-family:'Source Sans Pro', Tahoma, Verdana, Segoe, sans-serif;font-size:32px;font-weight:700;letter-spacing:0px;line-height:120%;text-align:center;mso-line-height-alt:38.4px;\">\n" +
-                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0;\">¡Hey, "+username+" bienvenid"+ (gender ? 'o' : 'a') +" a Viajes Global!  ¡Prepárate para descubrir el mundo!</p>\n" +
+                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0;\">¡Hey, " + username + " bienvenid" + (gender ? 'o' : 'a') + " a Viajes Global!  ¡Prepárate para descubrir el mundo!</p>\n" +
                 "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n" +
                 "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n" +
                 "\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n" +
@@ -503,7 +507,7 @@ public class MailSender {
                 "</body>\n" +
                 "\n" +
                 "</html>";
-        prop.put("mail.smtp.host","smtp.gmail.com");
+        prop.put("mail.smtp.host", "smtp.gmail.com");
         prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
         prop.setProperty("mail.smtp.starttls.enable", "true");
         prop.setProperty("mail.smtp.port", "587");
@@ -515,11 +519,49 @@ public class MailSender {
 
         try {
 
-            email= new MimeMessage(session);
+            email = new MimeMessage(session);
             email.setFrom(new InternetAddress(emailFrom));
             email.setRecipient(Message.RecipientType.TO, new InternetAddress(addressDestination));
-            BodyPart text= new MimeBodyPart();
-            text.setContent(content,"text/html");
+            BodyPart text = new MimeBodyPart();
+            text.setContent(content, "text/html");
+            MimeMultipart part = new MimeMultipart();
+            part.addBodyPart(text);
+            email.setSubject(subject);
+            email.setContent(part);
+            Transport t = session.getTransport("smtp");
+            t.connect(emailFrom, passwordFrom);
+            t.sendMessage(email, email.getRecipients(Message.RecipientType.TO));
+            t.close();
+            return true;
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean sendDiscountEmail(String addressDestination, String username, String discountType, String info) {
+        prop = new Properties();
+        subject = "NUEVO DESCUENTO EN VIAJES GLOBAL!";
+        content = "¡Hey, " + username + ", hay un nuevo descuento en " + discountType + " al que deberías echarle un vistazo!\n" +
+                info + " DE DESCUENTO!! \nViajes Global Colombia!";
+
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        prop.setProperty("mail.smtp.starttls.enable", "true");
+        prop.setProperty("mail.smtp.port", "587");
+        prop.setProperty("mail.smtp.user", emailFrom);
+        prop.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
+        prop.setProperty("mail.smtp.auth", "true");
+
+        session = Session.getDefaultInstance(prop);
+
+        try {
+
+            email = new MimeMessage(session);
+            email.setFrom(new InternetAddress(emailFrom));
+            email.setRecipient(Message.RecipientType.TO, new InternetAddress(addressDestination));
+            BodyPart text = new MimeBodyPart();
+            text.setContent(content, "text/html");
             MimeMultipart part = new MimeMultipart();
             part.addBodyPart(text);
             email.setSubject(subject);

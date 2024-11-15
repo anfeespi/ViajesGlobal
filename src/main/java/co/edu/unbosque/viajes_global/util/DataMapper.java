@@ -5,6 +5,7 @@ import co.edu.unbosque.viajes_global.exception.*;
 import co.edu.unbosque.viajes_global.model.*;
 import co.edu.unbosque.viajes_global.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +56,15 @@ public class DataMapper {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private HotelRepository hotelRepository;
+
+    @Autowired
+    private ExcursionRepository excursionRepository;
+
+    @Autowired
+    private FlightRepository flightRepository;
 
     public User userDTOToUser(UserDTO dto) {
         String idUser = dto.idUser();
@@ -130,14 +140,14 @@ public class DataMapper {
     }
 
     public Flight flightDTOToFlight(FlightDTO dto) throws ParseException {
-        FlightType flightType = flightTypeRepository.findById(dto.flightType()).get();
-        TouristPlace touristPlaceOrigin = touristPlaceRepository.findById(dto.touristPlaceOrigin()).get();
-        TouristPlace touristPlaceDestination = touristPlaceRepository.findById(dto.touristPlaceDestination()).get();
+        FlightType flightType = flightTypeRepository.findById(dto.flightType()).orElseThrow(() -> new EntityNotFoundException("Flight type Not found"));
+        TouristPlace touristPlaceOrigin = touristPlaceRepository.findById(dto.touristPlaceOrigin()).orElseThrow(() -> new EntityNotFoundException("Tourist Place Origin Not found"));
+        TouristPlace touristPlaceDestination = touristPlaceRepository.findById(dto.touristPlaceDestination()).orElseThrow(() -> new EntityNotFoundException("Tourist Place Destination Not found"));
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date dateBegin = format.parse(dto.dateBegin());
         Date dateEnd = format.parse(dto.dateEnd());
         Integer passengerNumber = dto.passengersNumber();
-        Airline airline = airlineRepository.findById(dto.airline()).get();
+        Airline airline = airlineRepository.findById(dto.airline()).orElseThrow(() -> new EntityNotFoundException("Airline Not found"));
         Double baseFee = dto.baseFee();
         Double taxes = dto.taxes();
         Double charges = dto.charges();
@@ -217,7 +227,7 @@ public class DataMapper {
 
     public Hotel hotelDTOToHotel(HotelDTO dto) {
         if (touristPlaceRepository.existsById(dto.touristPlace())) {
-            TouristPlace touristPlace = touristPlaceRepository.findById(dto.touristPlace()).get();
+            TouristPlace touristPlace = touristPlaceRepository.findById(dto.touristPlace()).orElseThrow(() -> new EntityNotFoundException("Tourist Place not found"));
             return new Hotel(touristPlace, dto.hotelName(), dto.guestsNumber(), dto.totalValue(), dto.details());
         }
         throw new ElementNotPresentException();
@@ -237,9 +247,9 @@ public class DataMapper {
 
     public FlightDetail flightDetailDTOToFlightDetail(FlightDetailDTO dto) throws ParseException {
         Flight flight = flightDTOToFlight(dto.flight());
-        PassengerType passengerType = passengerTypeRepository.findById(dto.passengerType()).get();
-        BaggageType baggageType = baggageTypeRepository.findById(dto.baggageType()).get();
-        Seat seat = seatRepository.findById(dto.seat()).get();
+        PassengerType passengerType = passengerTypeRepository.findById(dto.passengerType()).orElseThrow(() -> new EntityNotFoundException("Passenger type not found"));
+        BaggageType baggageType = baggageTypeRepository.findById(dto.baggageType()).orElseThrow(() -> new EntityNotFoundException("Baggage type not found"));
+        Seat seat = seatRepository.findById(dto.seat()).orElseThrow(() -> new EntityNotFoundException("Seat not found"));
         return new FlightDetail(flight, passengerType, baggageType, seat);
     }
 
@@ -249,7 +259,7 @@ public class DataMapper {
 
     public Excursion excursionDTOToExcursion(ExcursionDTO dto) {
         if (touristPlaceRepository.existsById(dto.touristPlace())) {
-            TouristPlace touristPlace = touristPlaceRepository.findById(dto.touristPlace()).get();
+            TouristPlace touristPlace = touristPlaceRepository.findById(dto.touristPlace()).orElseThrow(() -> new EntityNotFoundException("Tourist Place not found"));
             return new Excursion(touristPlace, dto.nameExcursion(), dto.descriptionExcursion(), dto.passengerPrice());
         }
         throw new ElementNotPresentException();
@@ -261,5 +271,35 @@ public class DataMapper {
 
     public ExcursionDetail excursionDetailDTOToExcursionDetail(ExcursionDetailDTO dto) {
         return new ExcursionDetail(excursionDTOToExcursion(dto.excursion()), dto.guestNumber(), dto.totalValue());
+    }
+
+    public HotelDiscountDTO hotelDiscountToHotelDiscountDTO(HotelDiscount hotelDiscount) {
+        return new HotelDiscountDTO(hotelDiscount.getHotelDiscountId(), hotelDiscount.getHotel().getIdHotel(), hotelDiscount.getDiscount(), hotelDiscount.getAvailable());
+    }
+
+    public HotelDiscount hotelDiscountDTOToHotelDiscount(HotelDiscountDTO dto) {
+        Hotel hotel = hotelRepository.findById(dto.hotel()).orElseThrow(() ->
+                new EntityNotFoundException("Hotel not found with ID: " + dto.hotel()));
+        return new HotelDiscount(hotel, dto.discount(), dto.available());
+    }
+
+    public ExcursionDiscountDTO excursionDiscountToExcursionDiscountDTO(ExcursionDiscount excursionDiscount) {
+        return new ExcursionDiscountDTO(excursionDiscount.getExcursionDiscountId(), excursionDiscount.getExcursion().getIdExcursion(), excursionDiscount.getDiscount(), excursionDiscount.getAvailable());
+    }
+
+    public ExcursionDiscount excursionDiscountDTOToExcursionDiscount(ExcursionDiscountDTO dto) {
+        Excursion excursion = excursionRepository.findById(dto.excursion()).orElseThrow(() ->
+                new EntityNotFoundException("Excursion not found with ID: " + dto.excursion()));
+        return new ExcursionDiscount(excursion, dto.discount(), dto.available());
+    }
+
+    public FlightDiscountDTO flightDiscountToFlightDiscountDTO(FlightDiscount flightDiscount) {
+        return new FlightDiscountDTO(flightDiscount.getFlightDiscountId(), flightDiscount.getFlight().getIdFlight(), flightDiscount.getDiscount(), flightDiscount.getAvailable());
+    }
+
+    public FlightDiscount flightDiscountDTOToFlightDiscount(FlightDiscountDTO dto) {
+        Flight flight = flightRepository.findById(dto.flight()).orElseThrow(() ->
+                new EntityNotFoundException("Flight not found with ID: " + dto.flight()));
+        return new FlightDiscount(flight, dto.discount(), dto.available());
     }
 }

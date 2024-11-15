@@ -9,10 +9,7 @@ import co.edu.unbosque.viajes_global.exception.UserNotFoundException;
 import co.edu.unbosque.viajes_global.model.NotificationMethod;
 import co.edu.unbosque.viajes_global.model.User;
 import co.edu.unbosque.viajes_global.repository.UserRepository;
-import co.edu.unbosque.viajes_global.util.DataMapper;
-import co.edu.unbosque.viajes_global.util.Encryption;
-import co.edu.unbosque.viajes_global.util.MailSender;
-import co.edu.unbosque.viajes_global.util.SMSSender;
+import co.edu.unbosque.viajes_global.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +23,9 @@ public class UserService {
 
     @Autowired
     private DataMapper dataMapper;
+
+    @Autowired
+    private EventManager eventManager;
 
     public UserService() {
 
@@ -56,6 +56,7 @@ public class UserService {
 
         entity.setUserNotificationMethods(userNotificationMethods);
 
+        eventManager.subscribe(entity);
         userRepository.save(entity);
         return true;
     }
@@ -64,9 +65,9 @@ public class UserService {
         List<UserDTO> users = ((List<User>) userRepository.findAll()).stream().map(dataMapper::userToUserDTO).toList();
         for (UserDTO user : users) {
             if (user.userEmail().equals(email)) {
-                if(user.userPassword().equals(password)){
+                if (user.userPassword().equals(password)) {
                     return user;
-                }else{
+                } else {
                     throw new PasswordMismatchException();
                 }
             }
@@ -77,7 +78,7 @@ public class UserService {
     public UserDTO getById(String id) throws UserNotFoundException {
         User user = userRepository.findById(id).isPresent() ? userRepository.findById(id).get() : null;
 
-        if(user != null){
+        if (user != null) {
             return dataMapper.userToUserDTO(user);
         }
 
