@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controlador para manejar los endpoints relacionados con los lugares turísticos.
+ *
+ * @autor Andres Espitia, Johan Gomez, David Lopez, Kevin Peña
+ */
 @RestController
 @RequestMapping("/cities")
 @CrossOrigin("*")
@@ -24,10 +29,16 @@ public class TouristPlaceController {
 
     }
 
-    @GetMapping()
+    /**
+     * Obtiene todos los lugares turísticos disponibles.
+     *
+     * @return ResponseEntity con la lista de lugares turísticos o NoContent si no hay lugares disponibles.
+     */
+    @GetMapping
     public ResponseEntity<?> getTouristPlaces() {
         List<TouristPlaceDTO> ret = touristPlaceService.getAllTouristPlaces();
-
-        return ret.isEmpty() ? ResponseEntity.status(HttpStatus.NO_CONTENT).body("There aren't some cities") : ResponseEntity.status(HttpStatus.OK).body(ret);
+        return ret.isEmpty() ? 
+            ResponseEntity.status(HttpStatus.NO_CONTENT).body("There aren't any tourist places available") :
+            ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 }
